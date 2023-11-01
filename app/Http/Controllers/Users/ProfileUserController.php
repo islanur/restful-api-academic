@@ -24,18 +24,24 @@ class ProfileUserController extends Controller
         return $user;
     }
 
+    private function getProfileUser(User $user, int $id): ProfileUser
+    {
+        $profileUser = ProfileUser::where('id', $id)->where('user_id', $user->id)->first();
+        if (!$profileUser) {
+            throw new HttpResponseException(response()->json([
+                'errors' => ['message' => 'Not found data profile user']
+            ])->setStatusCode(404));
+        }
+        return $profileUser;
+    }
+
     /**
      * Store a newly created resource in storage.
      */
-    public function store(ProfileStoreRequest $request, int $user_id): JsonResponse
+    public function store(int $user_id, ProfileStoreRequest $request): JsonResponse
     {
         $data = $request->validated();
-        $user = User::where('id', $user_id)->first();
-        if (!$user) {
-            throw new HttpResponseException(response()->json([
-                'errors' => ['message' => 'Not found data user']
-            ])->setStatusCode(404));
-        }
+        $user = $this->getUser($user_id);
 
         if (ProfileUser::where('user_id', $user->id)->count() == 1) {
             throw new HttpResponseException(response([
@@ -56,32 +62,42 @@ class ProfileUserController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(ProfileUser $profileUser)
+    public function show(int $user_id, int $id): JsonResponse
     {
-        //
-    }
+        $user = $this->getUser($user_id);
+        $profileUser = $this->getProfileUser($user, $id);
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(ProfileUser $profileUser)
-    {
-        //
+        return (new ProfileResource(true, 'Success get profile user', $profileUser, $user))
+            ->response()->setStatusCode(200);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, ProfileUser $profileUser)
+    public function update(int $user_id, int $id, ProfileStoreRequest $request): JsonResponse
     {
-        //
+        $user = $this->getUser($user_id);
+        $profileUser = $this->getProfileUser($user, $id);
+        $data = $request->validated();
+
+        $profileUser->fill($data);
+        $profileUser->save();
+
+        return (new ProfileResource(true, 'Success update profile user', $profileUser, $user))
+            ->response()->setStatusCode(200);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(ProfileUser $profileUser)
+    public function destroy(int $user_id, int $id): JsonResponse
     {
-        //
+        $user = $this->getUser($user_id);
+        $profileUser = $this->getProfileUser($user, $id);
+
+        $profileUser->delete();
+
+        return (new ProfileResource(true, 'Success delete profile user', null, null))
+            ->response()->setStatusCode(200);
     }
 }

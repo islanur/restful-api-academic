@@ -28,8 +28,8 @@ class ProfileResource extends JsonResource
         return [
             'success' => $this->status,
             'message' => $this->message,
-            'user account' => $this->account,
-            'profile' => $this->resource,
+            'user account' => $this->whenNotNull($this->account),
+            'profile' => $this->whenNotNull($this->resource),
         ];
     }
 }
