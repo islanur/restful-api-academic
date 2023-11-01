@@ -16,4 +16,5 @@ use Illuminate\Support\Facades\Route;
 Route::group(['namespace' => 'App\Http\Controllers'], function () {
     Route::post('register', 'AuthController@register');
     Route::post('login', 'AuthController@login');
+    Route::post('users/{id}/profile', 'Users\ProfileUserController@store');
 });
