@@ -34,4 +34,14 @@ class User extends Authenticatable
     {
         return $this->hasOne(ProfileUser::class);
     }
+
+    /**
+     * Get the addressUser associated with the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function addressUser(): HasOne
+    {
+        return $this->hasOne(AddressUser::class);
+    }
 }

@@ -5,11 +5,13 @@ namespace App\Http\Controllers\Users;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Users\ProfileStoreRequest;
 use App\Http\Resources\Users\ProfileResource;
+use App\Http\Resources\Users\UserResource;
 use App\Models\ProfileUser;
 use App\Models\User;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ProfileUserController extends Controller
 {
@@ -38,10 +40,10 @@ class ProfileUserController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(int $user_id, ProfileStoreRequest $request): JsonResponse
+    public function store(ProfileStoreRequest $request): JsonResponse
     {
         $data = $request->validated();
-        $user = $this->getUser($user_id);
+        $user = Auth::user();
 
         if (ProfileUser::where('user_id', $user->id)->count() == 1) {
             throw new HttpResponseException(response([
@@ -55,49 +57,49 @@ class ProfileUserController extends Controller
         $profileUser->user_id = $user->id;
         $profileUser->save();
 
-        return (new ProfileResource(true, 'Success add profile to user', $profileUser, $user))
+        return (new UserResource(true, 'Success add profile to user', $user, $profileUser))
             ->response()->setStatusCode(201);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(int $user_id, int $id): JsonResponse
+    public function show(int $id): JsonResponse
     {
-        $user = $this->getUser($user_id);
+        $user = Auth::user();
         $profileUser = $this->getProfileUser($user, $id);
 
-        return (new ProfileResource(true, 'Success get profile user', $profileUser, $user))
+        return (new UserResource(true, 'Success get profile user', $user, $profileUser))
             ->response()->setStatusCode(200);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(int $user_id, int $id, ProfileStoreRequest $request): JsonResponse
+    public function update(int $id, ProfileStoreRequest $request): JsonResponse
     {
-        $user = $this->getUser($user_id);
+        $user = Auth::user();
         $profileUser = $this->getProfileUser($user, $id);
         $data = $request->validated();
 
         $profileUser->fill($data);
         $profileUser->save();
 
-        return (new ProfileResource(true, 'Success update profile user', $profileUser, $user))
+        return (new UserResource(true, 'Success update profile user', $user, $profileUser))
             ->response()->setStatusCode(200);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(int $user_id, int $id): JsonResponse
+    public function destroy(int $id): JsonResponse
     {
-        $user = $this->getUser($user_id);
+        $user = Auth::user();
         $profileUser = $this->getProfileUser($user, $id);
 
         $profileUser->delete();
 
-        return (new ProfileResource(true, 'Success delete profile user', null, null))
+        return (new UserResource(true, 'Success delete profile user', null))
             ->response()->setStatusCode(200);
     }
 }

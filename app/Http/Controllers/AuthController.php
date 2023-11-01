@@ -37,4 +37,14 @@ class AuthController extends Controller
         return (new AuthResource(true, 'Success login', $user, $token))
             ->response()->setStatusCode(200);
     }
+
+    public function logout(): JsonResponse
+    {
+        /** @var \App\Models\User $user **/
+        $user = Auth::user();
+        $user->tokens()->where('id', $user->currentAccessToken()->id)->delete();
+
+        return (new AuthResource(true, 'Success logout', null))
+            ->response()->setStatusCode(200);
+    }
 }
