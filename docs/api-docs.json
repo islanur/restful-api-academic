@@ -1,0 +1,407 @@
+{
+  "openapi": "3.0.2",
+  "info": {
+    "title": "RESTful API Academic",
+    "version": "1.0"
+  },
+  "servers": [
+    {
+      "url": "https://localhost:8000/api"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "Admin": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  },
+  "paths": {
+    "/auth/register": {
+      "post": {
+        "tags": [
+          "Authenticate User"
+        ],
+        "description": "Register User",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "tags": [
+          "Authenticate User"
+        ],
+        "description": "Login user",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/users": {
+      "get": {
+        "security": [
+          {
+            "Admin": [
+              "admin"
+            ]
+          }
+        ],
+        "tags": [
+          "Users"
+        ],
+        "description": "Get all users",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "post": {
+        "security": [
+          {
+            "Admin": [
+              "admin"
+            ]
+          }
+        ],
+        "tags": [
+          "Users"
+        ],
+        "description": "Create a user",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "patch": {
+        "security": [
+          {
+            "Admin": [
+              "admin"
+            ]
+          }
+        ],
+        "tags": [
+          "Users"
+        ],
+        "description": "Update a user",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "delete": {
+        "security": [
+          {
+            "Admin": [
+              "admin"
+            ]
+          }
+        ],
+        "tags": [
+          "Users"
+        ],
+        "description": "Delete a user",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/users/current": {
+      "get": {
+        "tags": [
+          "Current User"
+        ],
+        "description": "Get current user data",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Current User"
+        ],
+        "description": "Update current user",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Current User"
+        ],
+        "description": "Delete current user/account",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/users/current/profile": {
+      "patch": {
+        "tags": [
+          "Current User"
+        ],
+        "description": "Update profile current user",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/users/current/address": {
+      "patch": {
+        "tags": [
+          "Current User"
+        ],
+        "description": "Update address current user",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/students": {
+      "parameters": [
+        {
+          "in": "header",
+          "name": "Admin",
+          "schema": {}
+        }
+      ],
+      "get": {
+        "tags": [
+          "Students"
+        ],
+        "description": "Get all students",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Students"
+        ],
+        "description": "Create a student",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Students"
+        ],
+        "description": "Update a student",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Students"
+        ],
+        "description": "Delete a student",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/students/current": {
+      "get": {
+        "tags": [
+          "Current Student"
+        ],
+        "description": "Get current student",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Current Student"
+        ],
+        "description": "Update profile current student",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/lecturers": {
+      "parameters": [
+        {
+          "in": "header",
+          "name": "Admin",
+          "schema": {}
+        }
+      ],
+      "get": {
+        "tags": [
+          "Lecturers"
+        ],
+        "description": "Get all Lecturers",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Lecturers"
+        ],
+        "description": "Create a lecturer",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Lecturers"
+        ],
+        "description": "Update a lecturer",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Lecturers"
+        ],
+        "description": "Delete a lecturer",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/lecturers/current": {
+      "get": {
+        "tags": [
+          "Current lecturer"
+        ],
+        "description": "Get current lecturer",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Current lecturer"
+        ],
+        "description": "Update profile current lecturer",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/courses": {
+      "get": {
+        "tags": [
+          "Courses"
+        ],
+        "description": "Get All courses",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Courses"
+        ],
+        "description": "Create a course",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Courses"
+        ],
+        "description": "Update a course",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Courses"
+        ],
+        "description": "Delete a course",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    }
+  }
+}
