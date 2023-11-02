@@ -3,38 +3,37 @@
 namespace App\Http\Controllers\Users;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Users\ProfileStoreRequest;
-use App\Http\Resources\Users\ProfileResource;
+use App\Http\Requests\Users\AddressStoreRequest;
+use App\Http\Requests\Users\AddressUpdateRequest;
 use App\Http\Resources\Users\UserResource;
-use App\Models\ProfileUser;
+use App\Models\AddressUser;
 use App\Models\User;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class ProfileUserController extends Controller
+class AddressUserController extends Controller
 {
-    private function getProfileUser(User $user, int $id): ProfileUser
+    private function getAddressUser(User $user, int $id): AddressUser
     {
-        $profileUser = ProfileUser::where('id', $id)->where('user_id', $user->id)->first();
-        if (!$profileUser) {
+        $addressUser = AddressUser::where('id', $id)->where('user_id', $user->id)->first();
+        if (!$addressUser) {
             throw new HttpResponseException(response()->json([
-                'errors' => ['message' => 'Not found data profile user']
+                'errors' => ['message' => 'Not found data address user']
             ])->setStatusCode(404));
         }
-        return $profileUser;
+        return $addressUser;
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(ProfileStoreRequest $request): JsonResponse
+    public function store(AddressStoreRequest $request): JsonResponse
     {
         $data = $request->validated();
         $user = Auth::user();
 
-        if (ProfileUser::where('user_id', $user->id)->count() == 1) {
+        if (AddressUser::where('user_id', $user->id)->count() == 1) {
             throw new HttpResponseException(response([
                 'errors' => [
                     'email' => ['Profile user already added.']
@@ -42,11 +41,11 @@ class ProfileUserController extends Controller
             ], 401));
         }
 
-        $profileUser = new ProfileUser($data);
-        $profileUser->user_id = $user->id;
-        $profileUser->save();
+        $addressUser = new AddressUser($data);
+        $addressUser->user_id = $user->id;
+        $addressUser->save();
 
-        return (new UserResource(true, 'Success add profile to user', $user, $profileUser))
+        return (new UserResource(true, 'Success add data address user', $user, null, $addressUser))
             ->response()->setStatusCode(201);
     }
 
@@ -56,25 +55,25 @@ class ProfileUserController extends Controller
     public function show(int $id): JsonResponse
     {
         $user = Auth::user();
-        $profileUser = $this->getProfileUser($user, $id);
+        $addressUser = $this->getAddressUser($user, $id);
 
-        return (new UserResource(true, 'Success get profile user', $user, $profileUser))
+        return (new UserResource(true, 'Success get address user', $user, null, $addressUser))
             ->response()->setStatusCode(200);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(int $id, ProfileStoreRequest $request): JsonResponse
+    public function update(int $id, AddressUpdateRequest $request): JsonResponse
     {
         $user = Auth::user();
-        $profileUser = $this->getProfileUser($user, $id);
+        $addressUser = $this->getAddressUser($user, $id);
         $data = $request->validated();
 
-        $profileUser->fill($data);
-        $profileUser->save();
+        $addressUser->fill($data);
+        $addressUser->save();
 
-        return (new UserResource(true, 'Success update profile user', $user, $profileUser))
+        return (new UserResource(true, 'Success update address user', $user, null, $addressUser))
             ->response()->setStatusCode(200);
     }
 
@@ -84,9 +83,9 @@ class ProfileUserController extends Controller
     public function destroy(int $id): JsonResponse
     {
         $user = Auth::user();
-        $profileUser = $this->getProfileUser($user, $id);
+        $addressUser = $this->getAddressUser($user, $id);
 
-        $profileUser->delete();
+        $addressUser->delete();
 
         return (new UserResource(true, 'Success delete profile user', null))
             ->response()->setStatusCode(200);

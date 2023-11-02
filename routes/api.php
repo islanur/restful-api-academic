@@ -37,5 +37,10 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('users/current/profile/{id}', 'ProfileUserController@show');
         Route::patch('users/current/profile/{id}', 'ProfileUserController@update');
         Route::delete('users/current/profile/{id}', 'ProfileUserController@destroy');
+
+        Route::post('users/current/address', 'AddressUserController@store');
+        Route::get('users/current/address/{id}', 'AddressUserController@show');
+        Route::patch('users/current/address/{id}', 'AddressUserController@update');
+        Route::delete('users/current/address/{id}', 'AddressUserController@destroy');
     });
 });

@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class AddressUser extends Model
 {
     use HasFactory;
+    protected $table = 'address_users';
     protected $guarded = ['id'];
 
     /**
