@@ -34,12 +34,11 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::patch('users/current', 'UserController@update');
 
         Route::post('users/current/profile', 'ProfileUserController@store');
-        Route::get('users/current/profile/{id}', 'ProfileUserController@show');
-        Route::patch('users/current/profile/{id}', 'ProfileUserController@update');
-        Route::delete('users/current/profile/{id}', 'ProfileUserController@destroy');
+        Route::patch('users/current/profile', 'ProfileUserController@update');
+        Route::delete('users/current/profile', 'ProfileUserController@destroy');
 
         Route::post('users/current/address', 'AddressUserController@store');
-        Route::get('users/current/address/{id}', 'AddressUserController@show');
+        Route::get('users/current/address', 'AddressUserController@show');
         Route::patch('users/current/address/{id}', 'AddressUserController@update');
         Route::delete('users/current/address/{id}', 'AddressUserController@destroy');
     });

@@ -26,9 +26,16 @@ class UserController extends Controller
      */
     public function show(): JsonResponse
     {
-        $user = Auth::user();
-        return (new UserResource(true, 'Success get data users', $user))
-            ->response()->setStatusCode(200);
+        try {
+            $user = Auth::user();
+            $user->profileuser;
+            $user->addressuser;
+            return (new UserResource(true, 'Success get data user', $user))
+                ->response()->setStatusCode(200);
+        } catch (\Throwable $th) {
+            return (new UserResource(true, $th->getMessage(), null))
+                ->response()->setStatusCode(404);
+        }
     }
 
     /**

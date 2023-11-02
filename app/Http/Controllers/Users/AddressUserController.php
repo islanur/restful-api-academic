@@ -32,33 +32,47 @@ class AddressUserController extends Controller
     {
         $data = $request->validated();
         $user = Auth::user();
+        try {
+            $address_id = $user->addresuser->id;
+            $user->addressuser->findOrFail($address_id);
 
-        if (AddressUser::where('user_id', $user->id)->count() == 1) {
-            throw new HttpResponseException(response([
-                'errors' => [
-                    'email' => ['Profile user already added.']
-                ]
-            ], 401));
+            $addressUser = new AddressUser($data);
+            $addressUser->user_id = $user->id;
+            $addressUser->save();
+
+            return (new UserResource(true, 'Success add data address user', $user))
+                ->response()->setStatusCode(201);
+        } catch (\Throwable $th) {
+            return (new UserResource(false, $th->getMessage() . '. Data address already exist, please update.', null))
+                ->response()->setStatusCode(404);
         }
 
-        $addressUser = new AddressUser($data);
-        $addressUser->user_id = $user->id;
-        $addressUser->save();
+        // $user->profileuser;
+        // if (!$user->addressuser == null) {
+        //     return response()->json([
+        //         'message' => 'Already Added'
+        //     ]);
+        // };
 
-        return (new UserResource(true, 'Success add data address user', $user, null, $addressUser))
-            ->response()->setStatusCode(201);
+
+
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(int $id): JsonResponse
+    public function show(): JsonResponse
     {
-        $user = Auth::user();
-        $addressUser = $this->getAddressUser($user, $id);
+        try {
+            $user = Auth::user();
+            $user->addressuser;
 
-        return (new UserResource(true, 'Success get address user', $user, null, $addressUser))
-            ->response()->setStatusCode(200);
+            return (new UserResource(true, 'Success get address user', $user))
+                ->response()->setStatusCode(200);
+        } catch (\Throwable $th) {
+            return (new UserResource(true, $th->getMessage(), null))
+                ->response()->setStatusCode(404);
+        }
     }
 
     /**
