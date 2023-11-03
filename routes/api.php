@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\UserController;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Route;
 
@@ -21,25 +23,19 @@ Route::get('/', function (): JsonResponse {
     ], 401);
 })->name('login');
 
-Route::group(['namespace' => 'App\Http\Controllers'], function () {
-    Route::post('register', 'AuthController@register');
-    Route::post('login', 'AuthController@login');
-    Route::delete('logout', 'AuthController@logout')->middleware('auth:sanctum');
+Route::controller(AuthController::class)->group(function () {
+    Route::post('/users/auth/register', 'register');
+    Route::post('/users/auth/login', 'login');
+    Route::delete('/users/auth/logout', 'logout')->middleware('auth:sanctum');
 });
 
 Route::middleware('auth:sanctum')->group(function () {
-    Route::group(['namespace' => 'App\Http\Controllers\Users'], function () {
-        Route::get('users', 'UserController@index');
-        Route::get('users/current', 'UserController@show');
-        Route::patch('users/current', 'UserController@update');
-
-        Route::post('users/current/profile', 'ProfileUserController@store');
-        Route::patch('users/current/profile', 'ProfileUserController@update');
-        Route::delete('users/current/profile', 'ProfileUserController@destroy');
-
-        Route::post('users/current/address', 'AddressUserController@store');
-        Route::get('users/current/address', 'AddressUserController@show');
-        Route::patch('users/current/address/{id}', 'AddressUserController@update');
-        Route::delete('users/current/address/{id}', 'AddressUserController@destroy');
+    Route::controller(UserController::class)->group(function () {
+        Route::get('/users', 'index');
+        Route::get('/users/{user}', 'show');
+        Route::patch('/users/{user}', 'update');
+        Route::patch('/users/{user}/profile', 'updateProfile');
+        Route::patch('/users/{user}/address', 'updateAddress');
+        Route::delete('/users/{user}', 'destroy');
     });
 });
