@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Route;
@@ -37,5 +38,13 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::patch('/users/{user}/profile', 'updateProfile');
         Route::patch('/users/{user}/address', 'updateAddress');
         Route::delete('/users/{user}', 'destroy');
+    });
+
+    Route::controller(DepartmentController::class)->group(function () {
+        Route::get('/departments', 'index');
+        Route::post('/departments', 'store');
+        Route::get('/departments/{department}', 'show');
+        Route::patch('/departments/{department}', 'update');
+        Route::delete('/departments/{department}', 'destroy');
     });
 });
