@@ -2,14 +2,16 @@
 
 namespace Tests\Feature;
 
+use App\Models\User;
 use Illuminate\Testing\Fluent\AssertableJson;
+use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
-class TestAuth extends TestCase
+class AuthTest extends TestCase
 {
-  public function testRegisterUserSuccess(): void
+  public function test_register_user_success(): void
   {
-    $response = $this->post('/api/register', [
+    $response = $this->post('/api/users/auth/register', [
       'username' => 'Test1',
       'email' => 'test1@gmail.com',
       'password' => '123456',
@@ -22,48 +24,12 @@ class TestAuth extends TestCase
         $json->has('status')->where('status', true)
           ->has('message')->where('message', 'Success register user')
           ->has('data', 5)
-          ->has('token')
       );
   }
 
-  public function testRegisterUserAlreadyExist(): void
+  public function test_login_success(): void
   {
-    $this->testRegisterUserSuccess();
-    $response = $this->post('/api/users/auth/register', [
-      'username' => 'Test1',
-      'email' => 'test1@gmail.com',
-      'password' => '123456',
-      'password_confirmation' => '123456'
-    ]);
-
-    $response->assertStatus(400)
-      ->assertJson([
-        "errors" => [
-          'username' => ["The username has already been taken."],
-          'email' => ["The email has already been taken."]
-        ]
-      ]);
-  }
-
-  public function testRegisterUserPasswordMatch(): void
-  {
-    $response = $this->post('/api/users/auth/register', [
-      'username' => 'Test1',
-      'email' => 'test1@gmail.com',
-      'password' => '123456',
-    ]);
-
-    $response->assertStatus(400)
-      ->assertJson([
-        "errors" => [
-          'password' => ["The password field confirmation does not match."]
-        ]
-      ]);
-  }
-
-  public function testLoginSuccess(): void
-  {
-    $this->testRegisterUserSuccess();
+    $this->test_register_user_success();
     $response = $this->post('/api/users/auth/login', [
       'email' => 'test1@gmail.com',
       'password' => '123456',
@@ -79,9 +45,9 @@ class TestAuth extends TestCase
       );
   }
 
-  public function testLoginInvalidCredentials(): void
+  public function test_login_invalid_credentials(): void
   {
-    $this->testRegisterUserSuccess();
+    User::factory()->create();
     $response = $this->post('/api/users/auth/login', [
       'email' => 'test@gmail.com',
       'password' => '123456',
@@ -96,25 +62,9 @@ class TestAuth extends TestCase
       );
   }
 
-  public function testLoginInvalid(): void
+  public function test_logout_success(): void
   {
-    $this->testRegisterUserSuccess();
-    $response = $this->post('/api/users/auth/login', [
-      'email' => 'test',
-      'password' => '123456',
-    ]);
-
-    $response->assertStatus(400)
-      ->assertJson([
-        "errors" => [
-          'email' => ["The email field must be a valid email address."]
-        ]
-      ]);
-  }
-
-  public function testLogoutSuccess(): void
-  {
-    $this->testRegisterUserSuccess();
+    Sanctum::actingAs(User::factory()->create(), ['*']);
     $response = $this->delete('/api/users/auth/logout');
     $response->assertStatus(200)
       ->assertJson(

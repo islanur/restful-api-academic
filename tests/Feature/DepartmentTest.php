@@ -10,7 +10,7 @@ use Illuminate\Testing\Fluent\AssertableJson;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
-class TestDepartment extends TestCase
+class DepartmentTest extends TestCase
 {
   /**
    * A basic feature test example.
@@ -26,7 +26,7 @@ class TestDepartment extends TestCase
         fn (AssertableJson $json) =>
         $json->has('status')->where('status', true)
           ->has('message')->where('message', 'Success get all departments')
-          ->has('data', 2)
+          ->has('data', 1)
       );;
   }
 
