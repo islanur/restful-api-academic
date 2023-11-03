@@ -13,10 +13,17 @@ class AuthController extends Controller
 {
     public function register(AuthRegisterRequest $request): JsonResponse
     {
-        $user = User::create($request->validated());
+        try {
+            $user = User::create($request->validated());
+            $user->profileuser()->create(['full_name' => $user['email']]);
+            $user->addressuser()->create(['country' => 'Indonesia']);
 
-        return (new AuthResource(true, 'Success register user', $user))
-            ->response()->setStatusCode(201);
+            return (new AuthResource(true, 'Success register user', $user))
+                ->response()->setStatusCode(201);
+        } catch (\Throwable $th) {
+            return (new AuthResource(true, $th->getMessage(), null))
+                ->response()->setStatusCode(404);
+        }
     }
 
     public function login(AuthLoginRequest $request): JsonResponse
@@ -30,9 +37,7 @@ class AuthController extends Controller
 
         /** @var \App\Models\User $user **/
         $user = Auth::user();
-        $token = $user->createToken('token')->plainTextToken;
-
-        Auth::login($user);
+        $token = $user->createToken('Guest')->plainTextToken;
 
         return (new AuthResource(true, 'Success login', $user, $token))
             ->response()->setStatusCode(200);
