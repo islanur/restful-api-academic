@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\InstructorController;
+use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
@@ -56,5 +57,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/instructors/{instructor}', 'show');
     Route::patch('/instructors/{instructor}', 'update');
     Route::delete('/instructors/{instructor}', 'destroy');
+  });
+
+  Route::controller(RoleController::class)->group(function () {
+    Route::get('/roles', 'index');
+    Route::post('/roles', 'store');
   });
 });

@@ -8,18 +8,18 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Department extends Model
 {
-    use HasFactory;
+  use HasFactory;
 
-    protected $table = 'departments';
-    protected $guarded = ['id'];
+  protected $table = 'departments';
+  protected $guarded = ['id'];
 
-    /**
-     * Get all of the instructor for the Department
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function instructor(): HasMany
-    {
-        return $this->hasMany(Instructor::class);
-    }
+  /**
+   * Get all of the instructor for the Department
+   *
+   * @return \Illuminate\Database\Eloquent\Relations\HasMany
+   */
+  public function instructors(): HasMany
+  {
+    return $this->hasMany(Instructor::class);
+  }
 }

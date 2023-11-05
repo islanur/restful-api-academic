@@ -7,6 +7,7 @@ use App\Http\Requests\AuthRegisterRequest;
 use App\Http\Resources\AuthResource;
 use App\Models\AddressUser;
 use App\Models\ProfileUser;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
@@ -26,7 +27,13 @@ class AuthController extends Controller
       $address->user()->associate($user);
       $address->save();
 
-      return (new AuthResource(true, 'Success register user', $user))
+      $user = User::find($user->id);
+      $role = Role::where('name', 'guest')->first();
+      $user->roles()->attach($role);
+
+      $token = $user->createToken('user-token', ['guest'])->plainTextToken;
+
+      return (new AuthResource(true, 'Success register user', $user, $token))
         ->response()->setStatusCode(201);
     } catch (\Throwable $th) {
       return (new AuthResource(true, $th->getMessage(), null))
@@ -46,9 +53,8 @@ class AuthController extends Controller
     /** @var \App\Models\User $user **/
     $user = Auth::user();
     $user = User::where('id', $user->id)->without('profileUser', 'addressUser')->first();
-    $token = $user->createToken('Guest')->plainTextToken;
 
-    return (new AuthResource(true, 'Success login', $user, $token))
+    return (new AuthResource(true, 'Success login', $user))
       ->response()->setStatusCode(200);
   }
 
