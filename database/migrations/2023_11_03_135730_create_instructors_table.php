@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('front_title', 20)->nullable();
             $table->string('back_title', 20);
             $table->timestamp('start_date')->default(DB::raw('CURRENT_TIMESTAMP'));
-            $table->foreignId('user_id')->constrained('users');
+            $table->foreignId('user_id')->constrained('users')->unique();
             $table->foreignId('department_id')->constrained('departments');
             $table->timestamps();
         });

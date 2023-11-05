@@ -10,9 +10,6 @@ use Illuminate\Http\JsonResponse;
 
 class DepartmentController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index(): JsonResponse
     {
         $department = Department::get();
@@ -20,9 +17,6 @@ class DepartmentController extends Controller
             ->response()->setStatusCode(200);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(StoreDepartmentRequest $request): JsonResponse
     {
         try {
@@ -35,9 +29,6 @@ class DepartmentController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(Department $department): JsonResponse
     {
         try {
@@ -50,16 +41,11 @@ class DepartmentController extends Controller
         }
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(UpdateDepartmentRequest $request, Department $department)
     {
         try {
-            $data = $request->validated();
-
             $department = Department::findOrFail($department->id);
-            $department->fill($data);
+            $department->fill($request->validated());
             $department->save();
 
             return (new DepartmentResource(true, 'Success update a department', $department))
@@ -70,9 +56,6 @@ class DepartmentController extends Controller
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Department $department)
     {
         try {
