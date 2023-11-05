@@ -2,9 +2,7 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -15,6 +13,7 @@ class User extends Authenticatable
     use HasApiTokens, HasFactory, Notifiable;
 
     protected $guarded = ['id'];
+    protected $with = ['profileUser', 'addressUser'];
 
     protected $hidden = [
         'password',
@@ -46,23 +45,13 @@ class User extends Authenticatable
         return $this->hasOne(AddressUser::class);
     }
 
-    // /**
-    //  * Get the instructor associated with the User
-    //  *
-    //  * @return \Illuminate\Database\Eloquent\Relations\HasOne
-    //  */
-    // public function instructor(): HasOne
-    // {
-    //     return $this->hasOne(Instructor::class);
-    // }
-
     /**
-     * Get the instructor that owns the User
+     * Get the instructor associated with the User
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    public function instructor(): BelongsTo
+    public function instructor(): HasOne
     {
-        return $this->belongsTo(Instructor::class);
+        return $this->hasOne(Instructor::class, 'user_id');
     }
 }
