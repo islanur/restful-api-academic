@@ -20,15 +20,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function (): JsonResponse {
-  return response()->json([
-    'status' => false,
-    'message' => 'Unauthorized User'
-  ], 401);
-})->name('login');
-
 Route::controller(AuthController::class)->group(function () {
-  Route::post('/users/auth/register', 'register');
+  Route::post('/users/auth/register', 'register')->middleware('auth:sanctum', 'ability:admin');
   Route::post('/users/auth/login', 'login');
   Route::delete('/users/auth/logout', 'logout')->middleware('auth:sanctum');
 });
@@ -62,5 +55,6 @@ Route::middleware('auth:sanctum')->group(function () {
   Route::controller(RoleController::class)->group(function () {
     Route::get('/roles', 'index');
     Route::post('/roles', 'store');
+    Route::post('/roles/{role}/users/{user}', 'giveRole');
   });
 });

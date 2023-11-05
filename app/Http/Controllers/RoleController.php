@@ -6,6 +6,8 @@ use App\Models\Role;
 use App\Http\Requests\StoreRoleRequest;
 use App\Http\Requests\UpdateRoleRequest;
 use App\Http\Resources\AllResource;
+use App\Http\Resources\AuthResource;
+use App\Models\User;
 
 class RoleController extends Controller
 {
@@ -37,9 +39,21 @@ class RoleController extends Controller
   /**
    * Display the specified resource.
    */
-  public function show(Role $role)
+  public function giveRole(Role $role, User $user)
   {
-    //
+    try {
+      $role = Role::findOrFail($role->id);
+      $user = User::findOrFail($user->id);
+      $user->roles()->attach($role);
+
+      $token = $user->createToken('user-token', [$role->name])->plainTextToken;
+
+      return (new AuthResource(true, 'Success register user', $user, $token))
+        ->response()->setStatusCode(200);
+    } catch (\Throwable $th) {
+      return (new AuthResource(false, $th->getMessage(), null))
+        ->response()->setStatusCode(404);
+    }
   }
 
   /**

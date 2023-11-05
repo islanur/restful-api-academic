@@ -31,12 +31,10 @@ class AuthController extends Controller
       $role = Role::where('name', 'guest')->first();
       $user->roles()->attach($role);
 
-      $token = $user->createToken('user-token', ['guest'])->plainTextToken;
-
-      return (new AuthResource(true, 'Success register user', $user, $token))
+      return (new AuthResource(true, 'Success register user', $user))
         ->response()->setStatusCode(201);
     } catch (\Throwable $th) {
-      return (new AuthResource(true, $th->getMessage(), null))
+      return (new AuthResource(false, $th->getMessage(), null))
         ->response()->setStatusCode(404);
     }
   }
@@ -50,11 +48,19 @@ class AuthController extends Controller
         ->response()->setStatusCode(401);
     }
 
-    /** @var \App\Models\User $user **/
     $user = Auth::user();
     $user = User::where('id', $user->id)->without('profileUser', 'addressUser')->first();
 
-    return (new AuthResource(true, 'Success login', $user))
+    $roles = User::find($user->id)
+      ->roles()->orderBy('name')->get()
+      ->pluck('name')->toArray();
+    if (empty($roles)) {
+      $roles = ['guest'];
+    }
+
+    $token = $user->createToken('user-token', $roles)->plainTextToken;
+
+    return (new AuthResource(true, 'Success login', $user, $token))
       ->response()->setStatusCode(200);
   }
 
