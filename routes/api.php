@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\InstructorController;
+use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
@@ -19,15 +20,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function (): JsonResponse {
-  return response()->json([
-    'status' => false,
-    'message' => 'Unauthorized User'
-  ], 401);
-})->name('login');
-
 Route::controller(AuthController::class)->group(function () {
-  Route::post('/users/auth/register', 'register');
+  Route::post('/users/auth/register', 'register')->middleware('auth:sanctum', 'ability:admin');
   Route::post('/users/auth/login', 'login');
   Route::delete('/users/auth/logout', 'logout')->middleware('auth:sanctum');
 });
@@ -56,5 +50,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/instructors/{instructor}', 'show');
     Route::patch('/instructors/{instructor}', 'update');
     Route::delete('/instructors/{instructor}', 'destroy');
+  });
+
+  Route::controller(RoleController::class)->group(function () {
+    Route::get('/roles', 'index');
+    Route::post('/roles', 'store');
+    Route::post('/roles/{role}/users/{user}', 'giveRole');
   });
 });

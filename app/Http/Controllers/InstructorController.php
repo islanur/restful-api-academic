@@ -44,7 +44,7 @@ class InstructorController extends Controller
       $instructor->department()->associate($dept);
       $instructor->save();
 
-      $user = User::where('id', $user->id)->with('instructor.department')->first();
+      $user = User::where('id', $user->id)->with('instructors.department')->first();
 
       return (new UserResource(true, 'Success create data instructor', $user))
         ->response()->setStatusCode(201);
@@ -58,7 +58,7 @@ class InstructorController extends Controller
   {
     try {
       $instructor = Instructor::findOrFail($instructor->id);
-      $user = User::where('id', $instructor->user_id)->with('instructor.department')->first();
+      $user = User::where('id', $instructor->user_id)->with('instructors.department')->first();
 
       return (new UserResource(true, 'Success get data instructor', $user))
         ->response()->setStatusCode(200);
